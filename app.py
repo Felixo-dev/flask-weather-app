@@ -1,11 +1,16 @@
 from flask import Flask, render_template, request
 import requests
 from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 #  OpenWeatherMap API Key
-API_KEY = "2f5f76b245bdc7bf55ff691468e657df"
+
+API_KEY = os.getenv('API_KEY')
 
 def format_time(unix_timestamp, timezone_offset):
     # Adjust UTC time to local city time
