@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Weather App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #4a90e2;
+            --sunny-gold: #f1c40f;
+            --rainy-blue: #3498db;
+            --cloudy-gray: #95a5a6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            color: #2d3436;
+        }
+
+        .weather-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        h1 { margin: 0 0 1.5rem 0; color: #2d3436; font-weight: 700; }
+
+        .search-box {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: 12px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus { border-color: var(--primary-blue); }
+
+        button {
+            padding: 12px 20px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover { background: #357abd; }
+
+        /* Icon Styling */
+        .icon-container {
+            font-size: 5rem;
+            margin-bottom: 10px;
+        }
+
+        .condition-desc {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        /* Data Rows */
+        .details-grid {
+            border-top: 1px solid #eee;
+            margin-top: 10px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 5px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .info-row:last-child { border-bottom: none; }
+
+        .label { color: #b2bec3; font-weight: 500; }
+        .value { font-weight: 600; color: #2d3436; }
+
+        .error {
+            background: #fab1a0;
+            color: #d63031;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="weather-card">
+        <h1>Weather App</h1>
+
+        <form method="POST" class="search-box">
+            <input type="text" name="city" value="{{ city if city else '' }}" placeholder="Enter city..." required>
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if weather and not error %}
+            <div class="icon-container">
+                {% if weather.condition == 'Clear' %}
+                    <i class="fas fa-sun" style="color: var(--sunny-gold);"></i>
+                {% elif weather.condition == 'Clouds' %}
+                    <i class="fas fa-cloud" style="color: var(--cloudy-gray);"></i>
+                {% elif weather.condition in ['Rain', 'Drizzle'] %}
+                    <i class="fas fa-cloud-showers-heavy" style="color: var(--rainy-blue);"></i>
+                {% elif weather.condition == 'Snow' %}
+                    <i class="fas fa-snowflake" style="color: #add8e6;"></i>
+                {% elif weather.condition == 'Thunderstorm' %}
+                    <i class="fas fa-bolt" style="color: #e67e22;"></i>
+                {% else %}
+                    <i class="fas fa-smog" style="color: #bdc3c7;"></i>
+                {% endif %}
+            </div>
+            
+            <div class="condition-desc">{{ weather.condition }}</div>
+
+            <div class="details-grid">
+                <div class="info-row">
+                    <span class="label">Location</span>
+                    <span class="value">{{ city|capitalize }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Temp</span>
+                    <span class="value">{{ weather.temp }}°C</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Humidity</span>
+                    <span class="value">{{ weather.humidity }}%</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Sunrise</span>
+                    <span class="value">{{ weather.sunrise }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Sunset</span>
+                    <span class="value">{{ weather.sunset }}</span>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
